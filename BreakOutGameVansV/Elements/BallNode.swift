@@ -15,6 +15,8 @@ public class BallNode:SKSpriteNode  {
         physicsBody?.affectedByGravity  = true // 掉在地板后才不会再弹起;
         physicsBody?.isDynamic =  true
         physicsBody?.friction = 0.0
+        physicsBody?.linearDamping = 0
+        physicsBody?.angularDamping = 0 
         physicsBody?.restitution = 1.0   /// 反弹力 详见 http://www.ifiero.com/index.php/archives/492
         physicsBody?.categoryBitMask    = PhysicsCategory.Ball
         /// 球和谁发生碰撞后发出通知

@@ -38,6 +38,10 @@
 		21C3E3E420F39AB700BE803B /* ParticleSprites.1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21C3E3E020F39AB700BE803B /* ParticleSprites.1@3x.png */; };
 		21C3E3E520F39AB700BE803B /* ParticleSprites.1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21C3E3E120F39AB700BE803B /* ParticleSprites.1@2x.png */; };
 		21D714E72111E28600CC54B8 /* ShoseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D714E62111E28600CC54B8 /* ShoseNode.swift */; };
+		21FDC0862115A4A700815C64 /* ShoseCrossScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 21FDC0852115A4A700815C64 /* ShoseCrossScene.sks */; };
+		21FDC0892115AAEC00815C64 /* WaitingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDC0882115AAEC00815C64 /* WaitingState.swift */; };
+		21FDC08B2115AAF700815C64 /* PlayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDC08A2115AAF700815C64 /* PlayState.swift */; };
+		21FDC08D2115AB2700815C64 /* GameOverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDC08C2115AB2700815C64 /* GameOverState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +78,10 @@
 		21C3E3E020F39AB700BE803B /* ParticleSprites.1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ParticleSprites.1@3x.png"; sourceTree = "<group>"; };
 		21C3E3E120F39AB700BE803B /* ParticleSprites.1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ParticleSprites.1@2x.png"; sourceTree = "<group>"; };
 		21D714E62111E28600CC54B8 /* ShoseNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoseNode.swift; sourceTree = "<group>"; };
+		21FDC0852115A4A700815C64 /* ShoseCrossScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ShoseCrossScene.sks; sourceTree = "<group>"; };
+		21FDC0882115AAEC00815C64 /* WaitingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingState.swift; sourceTree = "<group>"; };
+		21FDC08A2115AAF700815C64 /* PlayState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayState.swift; sourceTree = "<group>"; };
+		21FDC08C2115AB2700815C64 /* GameOverState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +162,7 @@
 		2155C39820DDF60600E28D4C /* BreakOutGameVansV */ = {
 			isa = PBXGroup;
 			children = (
+				21FDC0872115AAD900815C64 /* States */,
 				210BA0DA20EDB34B00E0472C /* SKUtilities */,
 				21C3E3DC20F39AA300BE803B /* Resources */,
 				210BA0DE20EDB49600E0472C /* Elements */,
@@ -166,6 +175,7 @@
 				2155C3A820DDF60700E28D4C /* LaunchScreen.storyboard */,
 				2155C3AB20DDF60700E28D4C /* Info.plist */,
 				216B9062211497FA00113458 /* ShoseScene.sks */,
+				21FDC0852115A4A700815C64 /* ShoseCrossScene.sks */,
 			);
 			path = BreakOutGameVansV;
 			sourceTree = "<group>";
@@ -189,6 +199,16 @@
 				21C3E3E020F39AB700BE803B /* ParticleSprites.1@3x.png */,
 			);
 			path = ParticleSprites.atlasc;
+			sourceTree = "<group>";
+		};
+		21FDC0872115AAD900815C64 /* States */ = {
+			isa = PBXGroup;
+			children = (
+				21FDC0882115AAEC00815C64 /* WaitingState.swift */,
+				21FDC08A2115AAF700815C64 /* PlayState.swift */,
+				21FDC08C2115AB2700815C64 /* GameOverState.swift */,
+			);
+			path = States;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,6 +284,7 @@
 				2143FBDB20FB621B006E31F4 /* hitskateboard.caf in Resources */,
 				216B9063211497FA00113458 /* ShoseScene.sks in Resources */,
 				2143FBD820FB621B006E31F4 /* gamewon.mp3 in Resources */,
+				21FDC0862115A4A700815C64 /* ShoseCrossScene.sks in Resources */,
 				2143FBDF20FB6347006E31F4 /* Fire.sks in Resources */,
 				21C3E3E420F39AB700BE803B /* ParticleSprites.1@3x.png in Resources */,
 				2143FBD920FB621B006E31F4 /* bgmusic.mp3 in Resources */,
@@ -290,6 +311,9 @@
 				2155C39A20DDF60600E28D4C /* AppDelegate.swift in Sources */,
 				21D714E72111E28600CC54B8 /* ShoseNode.swift in Sources */,
 				2143FBC320FB5CD6006E31F4 /* SoundManager.swift in Sources */,
+				21FDC08B2115AAF700815C64 /* PlayState.swift in Sources */,
+				21FDC0892115AAEC00815C64 /* WaitingState.swift in Sources */,
+				21FDC08D2115AB2700815C64 /* GameOverState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

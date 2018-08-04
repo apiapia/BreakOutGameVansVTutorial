@@ -9,7 +9,7 @@
 import SpriteKit
 
 public class ShoseNodeClass:SKSpriteNode  {
-    /// 建立精灵节点 只能在Scene用代码调用!
+    /// 建立精灵节点 可结合可视化Scene.sks 进行编辑 引入为Custom Class!
      func newInstance(scene:SKScene){
         //print(scene);
         //let shoseNode = ShoseNode(imageNamed: "vansShose")
@@ -24,6 +24,14 @@ public class ShoseNodeClass:SKSpriteNode  {
         // self.physicsBody?.restitution = 0.0
         self.physicsBody?.friction = 0.0
         self.zPosition = 2
-        
+    }
+    func runShake(scene:SKScene){
+        //degreesToRadians 角度转化为弧度
+       let upAction = SKAction.rotate(byAngle: CGFloat(-10).degreesToRadians(), duration: TimeInterval(0.1))
+        upAction.timingMode = .easeInEaseOut
+       let downAction = upAction.reversed()
+        let sequence = SKAction.sequence([upAction,downAction])
+        let repeatShake = SKAction.repeat(sequence, count: 2)
+        self.run(repeatShake, withKey: "shake")
     }
 }

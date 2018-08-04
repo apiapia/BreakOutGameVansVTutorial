@@ -34,6 +34,9 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
+public let SCENE_WIDTH:CGFloat  = 2048
+public let SCENE_HEIGHT:CGFloat = 1536
+
 class GameViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -42,11 +45,11 @@ class GameViewController: UIViewController {
         if let view = self.view as! SKView? {
         
             if let scene = GameScene(fileNamed: "GameScene") {
-                scene.size = CGSize(width: 2048, height: 1536)
+                scene.size = CGSize(width: SCENE_WIDTH, height: SCENE_HEIGHT)
                 scene.scaleMode = .aspectFill
                 view.presentScene(scene)
             }
-            // view.showsPhysics = true 
+             view.showsPhysics = true 
             view.ignoresSiblingOrder = true
             view.showsFPS = true
             view.showsNodeCount = true

@@ -34,9 +34,17 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
+    
+    //MARK: - StateMachine 场景中各个舞台State
+    lazy var stateMachine:GKStateMachine = GKStateMachine(states: [
+        WaitingState(scene: self),
+        PlayState(scene: self),
+        GameOverState(scene: self)])
+    
     private var fgNode = SKNode()
     private var ballNode = BallNode()
     private var shoseOverlay:SKSpriteNode! /// 鞋子精灵Parent 位于 shoseOverlay 节点下
+    private var gameSceneOverlay:SKSpriteNode! //复制的鞋子精灵
     private var shoseNode:ShoseNodeClass!   /// 鞋子精灵
     private var skateboard = Skateboard()
     private var maxAspectRatio:CGFloat! /// 屏幕分辩率;
@@ -45,21 +53,27 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     private var playableRect:CGRect!   /// 可视范围
     private var playableHeight:CGFloat  = 0.0   /// 可视范围的高度
     private var playableMargin:CGFloat = 0.0   /// 可视范围的起点
+    var learnTemp:SKSpriteNode!
+    var playButtonTemp:SKSpriteNode!
     
     private var dt:TimeInterval = 0  /// 每一frame的时间差
     private var lastUpdateTimeInterval:TimeInterval = 0
     
+    
+    
     override func didMove(to view: SKView) {
-        self.physicsWorld.gravity = CGVector.zero
-        self.physicsBody?.linearDamping = 0.0
-        self.physicsBody?.angularDamping = 0.0
-        self.physicsWorld.contactDelegate = self
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)  /// 物理世界的重力
+        self.physicsWorld.contactDelegate = self               /// 碰撞代理
         
+        learnTemp   = childNode(withName: "learnTemp") as! SKSpriteNode
+        playButtonTemp   = childNode(withName: "playButton") as! SKSpriteNode
         initCheckDevice()
         setupBall()       /// 球
         setupSkateboard() /// 滑板
         setupShose()      /// 鞋子
         setupBgMusic()    // 加入背景音乐;
+        
+        stateMachine.enter(WaitingState.self) // 进入WaitingState
         
     }
     // option+command+->展开
@@ -118,8 +132,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     func setupBall(){    
         ballNode = childNode(withName: "ball") as! BallNode
         ballNode.setup(scene:self.scene!)  // 导入size与physicsBody
+    }
+    
+    func runBallRotate(){
         ballNode.rotate()
+    }
+    func runBall(){
         ballNode.physicsBody?.applyImpulse(CGVector(dx: 100.0, dy: -ballInitSpeed)) /// dy的绝对值越大 球速越快; - 表示向下
+    }
+    func runBallInvincible(){
+        // 即碰到底部不会lose掉game
+        print("Invincible")
+        ballNode.physicsBody?.categoryBitMask = PhysicsCategory.None
     }
     //MARK: - 滑板
     func setupSkateboard(){
@@ -146,10 +170,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
          emitter.setScale(3.0)
          shoseNode.addChild(emitter)
          */
-        // 3.引用其它scene的节点到当前Scene中，需要convert转化到当前GameScene的坐标
-        let overlayScene = SKScene(fileNamed: "ShoseScene")!
+        // 二、引用其它scene的节点到当前Scene中，需要convert转化到当前GameScene的坐标
+        var sceneName = ""
+        sceneName = (CGFloat.random(1, max: 100) > 50) ? "ShoseCrossScene" : "ShoseScene"
+        let overlayScene = SKScene(fileNamed: sceneName)!
         let overlayShose = overlayScene.childNode(withName: "Overlay") as! SKSpriteNode
-        let gameSceneOverlay = overlayShose.copy() as! SKSpriteNode
+        gameSceneOverlay = overlayShose.copy() as! SKSpriteNode
         overlayShose.removeFromParent() // 移除旧的
         /* 留意SpirteKit的巨坑
          * When an overlay node with actions is copied  there is currently a SpriteKit bug
@@ -173,9 +199,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         music.autoplayLooped = true
         // self.addChild(music)
     }
-    // 返回 -50.0 或 50.0 角度50 已经很小了;
+    // 返回 -80.0 或 80.0 角度50 已经很小了;
     func randomDirection() -> CGFloat {
-        var xSpeed:CGFloat = 50.0
+        var xSpeed:CGFloat = 80.0
         if CGFloat.random(1, max: 100) > 50 {
             xSpeed = -xSpeed
         }
@@ -208,6 +234,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         emitter.position = scenePos
         emitter.setScale(3.0)
         self.addChild(emitter)
+        
+        let node = sprite as! ShoseNodeClass
+        node.runShake(scene: self.scene!)
+        
         sprite.run(SKAction.sequence([
             SKAction.wait(forDuration: TimeInterval(0.5)),
             //SKAction.scale(to: 0.0, duration: TimeInterval(0.08)),
@@ -216,14 +246,22 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 emitter.removeFromParent()
             },
             SKAction.run {
-                 sprite.removeFromParent()
+                sprite.removeFromParent()
             },
             SKAction.run {
-                print ("精灵节点内 hit shoses")
+                // print ("设置copy()后的精灵节点的isPaused=false后，此行才会执行")
             }
             ]))
     }
     
+    func restartGame(){
+        let newScene = GameScene(fileNamed: "GameScene")!
+        newScene.size = CGSize(width: SCENE_WIDTH, height: SCENE_HEIGHT)
+        newScene.anchorPoint = CGPoint(x: 0, y: 0)
+        newScene.scaleMode   = .aspectFill
+        let transition = SKTransition.crossFade(withDuration: TimeInterval(0.5))
+        view?.presentScene(newScene, transition:transition)
+    }
     //MARK: - 实现物理碰撞代理SKPhysicsContactDelegate的didBegin方法
     func didBegin(_ contact: SKPhysicsContact) {
         
@@ -262,31 +300,76 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             bodyA.node?.physicsBody?.linearDamping = 1.0 /// 阻力为1.0
             bodyA.node?.physicsBody?.restitution = 0.7  /// 反弹;
             self.physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8)
+            stateMachine.enter(GameOverState.self)
         }
         
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+        // 当 physicsWorld.body(at: touchLocation)时
+        // 采用atPoint 取得场景中的的精灵
+        let touchLocation = touch.location(in: self) ///获得点击的位置
+        let nodeAtPoint = self.atPoint(touchLocation) //返回SKNode
+        /// 判断目前的GameScene场景舞台是哪个state
+        switch stateMachine.currentState {
+        case is WaitingState:
+            
+            /// 判断是否是点击了PlayButton
+            if nodeAtPoint.name == "playButton" {
+                stateMachine.enter(PlayState.self)
+            }
+            
+            if nodeAtPoint.name == "learnTemp" {
+                 print("weird")
+                UIApplication.shared.open(URL(string: "http://www.iFIERO.com")!, options: [:], completionHandler: { (error) in
+                    print("jump to http://www.iFiero.com")
+                })
+            }
+            
+        case is PlayState:
+            print("playing")
+        case is GameOverState:
+           
+            if nodeAtPoint.name == "tapToPlay" {
+                restartGame()
+            }
+            
+        default:
+            break;
+        }
+    }
+    
+    func gameOver(){
+        // 进入游戏结束的state
+        stateMachine.enter(GameOverState.self)
+        ballNode.physicsBody?.affectedByGravity = true 
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
+    }
+    
+    func isGameWon() -> Bool {
+        // 初始值 为 0 ，表示没有shose了;
+        var numberOfShoses = 0
+        // 这个是判断是不是还有shose，有则为 1
+        gameSceneOverlay.enumerateChildNodes(withName: "shose") {  node, _ in
+            numberOfShoses = 1
+        }
+        return numberOfShoses == 0  // 真或者假 numberOfShoses >0 返回假
+    }
     //MARK: - 时时更新
     override func update(_ currentTime: TimeInterval) {
-        
         /// 获取时间差
         if lastUpdateTimeInterval == 0 {
             lastUpdateTimeInterval = currentTime
         }
         dt = currentTime - lastUpdateTimeInterval
         lastUpdateTimeInterval = currentTime
+        stateMachine.update(deltaTime: dt)  // 调用所有State内的update方法
         
-        verifyBallSpeed(dt)  /// 限制球的速度与方向
     }
 }
-
-extension SKSpriteNode {
-    func copyWithPhysicsBody()->SKSpriteNode{
-        let spriteNode = self.copy() as! SKSpriteNode
-        spriteNode.physicsBody = self.physicsBody
-        return spriteNode
-    }
-}
-
 
 
 
