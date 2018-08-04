@@ -197,7 +197,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     func setupBgMusic(){
         let music = SKAudioNode(fileNamed: "bgmusic.mp3")
         music.autoplayLooped = true
-        // self.addChild(music)
+        self.addChild(music)
     }
     // 返回 -80.0 或 80.0 角度50 已经很小了;
     func randomDirection() -> CGFloat {

@@ -29,9 +29,10 @@ class PlayState:GKState {
     override func update(deltaTime seconds: TimeInterval) {
         scene.verifyBallSpeed(seconds)
         if scene.isGameWon() {
-            print("win")
+            print("win") // gameOver
             scene.runBallInvincible()
             scene.gameOver()
+            
         }else {
             print("playing")
         }
