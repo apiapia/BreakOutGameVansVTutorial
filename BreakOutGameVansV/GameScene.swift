@@ -15,7 +15,7 @@
  *  Created by VANGO杨 && ANDREW陈
  *  Copyright © 2018 iFiero. All rights reserved.
  *  www.iFIERO.com
- *  iFIERO -- 让手机游戏开发变得简单
+ *  iFIERO -- 为游戏开发深感自豪
  *
  *  BreakOutGame 弹潮V 在此游戏中您将获得如下主要技能:
  *
