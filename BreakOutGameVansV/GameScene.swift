@@ -309,7 +309,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         guard let touch = touches.first else {
             return
         }
-        // 当 physicsWorld.body(at: touchLocation)时
+        // 当 physicsWorld.body(at: touchLocation)为nil时
         // 采用atPoint 取得场景中的的精灵
         let touchLocation = touch.location(in: self) ///获得点击的位置
         let nodeAtPoint = self.atPoint(touchLocation) //返回SKNode
