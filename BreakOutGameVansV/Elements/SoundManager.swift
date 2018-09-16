@@ -2,7 +2,6 @@
 //  SoundManager.swift
 //  BreakOutGameVansV
 //
-//  Created by Chen on 2018/7/15.
 //  Copyright © 2018 iFiero. All rights reserved.
 //
 

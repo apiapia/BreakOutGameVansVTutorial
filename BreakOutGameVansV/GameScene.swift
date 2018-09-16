@@ -32,6 +32,7 @@
 
 import SpriteKit
 import GameplayKit
+import AVFoundation
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
@@ -58,6 +59,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     private var dt:TimeInterval = 0  /// 每一frame的时间差
     private var lastUpdateTimeInterval:TimeInterval = 0
+    private var avPlayer:AVAudioPlayer!
     
     
     
@@ -195,9 +197,20 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     //MARK:背景音乐
     func setupBgMusic(){
-        let music = SKAudioNode(fileNamed: "bgmusic.mp3")
-        music.autoplayLooped = true
-        self.addChild(music)
+        // let music = SKAudioNode(fileNamed: "bgmusic.mp3")
+        // music.autoplayLooped = true
+        // self.addChild(music)
+        // 背景音乐
+        let path = Bundle.main.path(forResource: "bgmusic", ofType: "mp3")
+        let pathUrl = URL(fileURLWithPath: path!)
+        do {
+            try avPlayer = AVAudioPlayer(contentsOf: pathUrl)
+        }catch {
+            // return 在catch不使用return的原因是 即使因声音播放不了 还是让整个游戏运行
+            print("mp3 error")
+        }
+        avPlayer.play()
+        avPlayer.volume = 0.2
     }
     // 返回 -80.0 或 80.0 角度50 已经很小了;
     func randomDirection() -> CGFloat {
@@ -228,6 +241,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     // 特效果汁
     func emitParticles(particleName: String, sprite: SKSpriteNode) {
+     
         let scenePos = convert(sprite.position, from: sprite.parent!)
         let emitter = SKEmitterNode(fileNamed: "Fire")!
         emitter.zPosition = 5  // 位于鞋子的上方;
