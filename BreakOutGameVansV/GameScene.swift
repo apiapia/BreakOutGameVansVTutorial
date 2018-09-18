@@ -109,6 +109,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         shapeFrame.lineWidth = 5.0
         addChild(shapeFrame)
         
+//        let path = CGPath()
+//        let redNode = SKShapeNode(path: path)
+        
         /// 可视区域的物理状态
         let playableBody = SKPhysicsBody(edgeLoopFrom: playableRect)
         playableBody.friction = 0
@@ -210,7 +213,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             print("mp3 error")
         }
         avPlayer.play()
-        avPlayer.volume = 0.2
+        avPlayer.volume = 0.1 //音量
     }
     // 返回 -80.0 或 80.0 角度50 已经很小了;
     func randomDirection() -> CGFloat {
