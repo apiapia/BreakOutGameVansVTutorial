@@ -89,14 +89,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         let pattern = [CGFloat(30.0),CGFloat(1.0)]
         let dashPath = path.copy(dashingWithPhase: 0, lengths: pattern, transform: .identity)
-    
+        
         let dashNode = SKShapeNode(path: dashPath)
         dashNode.zPosition = 1
         dashNode.strokeColor = SKColor.darkGray
         dashNode.lineWidth = 2.0
         addChild(dashNode)
     }
-    // option+command+->展开
+    
     // MARK: - 检测是哪种设备
     func initCheckDevice(){
         if UIDevice.current.isPhoneX() {
@@ -105,29 +105,41 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             maxAspectRatio  = UIDevice.current.isPad() ? (4.0 / 3.0) : (16.0 / 9.0)  /// iPhone 16:9,iPad 4:3
         }
         /// 画出可视区域
-        drawPayableArea(size: self.size,ratio: maxAspectRatio)
+        drawPlayableArea(size: self.size,ratio: maxAspectRatio)
+        /// 画出安全区域
+        drawSafeArea(size: self.size,ratio: maxAspectRatio)
     }
     // MARK: - command + option + 左or右箭头 可以折叠/拓展函数
+    // MARK: - 安全区域即用户交互的区域，非可视区域 (iPhoneX的安全区域 < 可视区域)
+    func drawSafeArea(size:CGSize,ratio:CGFloat){
+        
+        playableHeight  = size.width / ratio
+        playableMargin = (size.height - playableHeight ) / 2.0   /// P70
+        
+        let safeInsetLeft   =  AREA_INSET_WIDTH_LEFT * ratio
+        let safeInsetRight  =  size.width - safeInsetLeft - AREA_INSET_WIDTH_RIGHT * ratio
+        
+        playableRect = CGRect(x: safeInsetLeft, y: playableMargin, width:safeInsetRight, height:  playableHeight)  /// 注意 scene的anchorPoint(0,0)原点的位置;
+        let shapeFrame = SKShapeNode(rect: playableRect)
+        shapeFrame.zPosition = 2
+        shapeFrame.strokeColor = SKColor.green
+        shapeFrame.lineWidth = 6.0
+        addChild(shapeFrame)
+        
+    }
     // MARK: - 画出可视区域
-    func drawPayableArea(size:CGSize,ratio:CGFloat){
-        /*
-         /// 安全区域即用户交互的区域，非可视区域 (iPhoneX的安全区域 < 可视区域)
-         let safeInsetTop    =  self.size.height * AREA_INSET_WIDTH_TOP / iPhoneX_REAL_HEIGHT
-         let safeInsetBottom =  self.size.height * AREA_INSET_WIDTH_BOTTOM / iPhoneX_REAL_HEIGHT
-         let safeHeight = self.size.height - safeInsetTop - safeInsetBottom   // 安全区域的高度
-         */
+    func drawPlayableArea(size:CGSize,ratio:CGFloat){
         
         playableHeight  = size.width / ratio
         playableMargin = (size.height - playableHeight ) / 2.0   /// P70
         playableRect = CGRect(x: 0, y: playableMargin, width: size.width, height:  playableHeight)  /// 注意 scene的anchorPoint(0,0)原点的位置;
+        print("playable Margin",playableMargin)
+        
         let shapeFrame = SKShapeNode(rect: playableRect)
         shapeFrame.zPosition = 1
         shapeFrame.strokeColor = SKColor.red
         shapeFrame.lineWidth = 5.0
         addChild(shapeFrame)
-        
-//        let path = CGPath()
-//        let redNode = SKShapeNode(path: path)
         
         /// 可视区域的物理状态
         let playableBody = SKPhysicsBody(edgeLoopFrom: playableRect)
@@ -261,7 +273,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     // 特效果汁
     func emitParticles(particleName: String, sprite: SKSpriteNode) {
-     
+        
         let scenePos = convert(sprite.position, from: sprite.parent!)
         let emitter = SKEmitterNode(fileNamed: "Fire")!
         emitter.zPosition = 5  // 位于鞋子的上方;
@@ -357,7 +369,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
             
             if nodeAtPoint.name == "learnTemp" {
-                 print("weird")
+                print("weird")
                 UIApplication.shared.open(URL(string: "http://www.iFIERO.com")!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: { (error) in
                     print("jump to http://www.iFiero.com")
                 })
@@ -366,7 +378,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         case is PlayState:
             print("playing")
         case is GameOverState:
-           
+            
             if nodeAtPoint.name == "tapToPlay" {
                 restartGame()
             }
@@ -401,15 +413,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         dt = currentTime - lastUpdateTimeInterval
         lastUpdateTimeInterval = currentTime
         stateMachine.update(deltaTime: dt)  // 调用所有State内的update方法
-        
     }
 }
 
 
-
-
-
 // Helper function inserted by Swift 4.2 migrator.
 fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
+    return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

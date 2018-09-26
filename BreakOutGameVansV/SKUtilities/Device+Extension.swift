@@ -18,10 +18,8 @@ import SpriteKit
 public let AREA_INSET_HEIGHT_TOP   :CGFloat = (UIScreen.main.bounds.height == 812 || UIScreen.main.bounds.height == 896) ? 44.0 : 0
 public let AREA_INSET_HEIGHT_BOTTOM:CGFloat = (UIScreen.main.bounds.height == 812 || UIScreen.main.bounds.height == 896) ? 34.0 : 0
 // 横屏(安全区域)
-public let AREA_INSET_WIDTH_TOP    :CGFloat = (UIScreen.main.bounds.width == 812 || UIScreen.main.bounds.height == 896) ? 44.0 : 0
-public let AREA_INSET_WIDTH_BOTTOM :CGFloat = (UIScreen.main.bounds.width == 812 || UIScreen.main.bounds.height == 896) ? 34.0 : 0
-
-public let iPhoneX_REAL_HEIGHT:CGFloat = 812.0   /// 竖屏
+public let AREA_INSET_WIDTH_LEFT  :CGFloat = (UIScreen.main.bounds.width == 812 || UIScreen.main.bounds.width == 896) ? 44.0 : 0
+public let AREA_INSET_WIDTH_RIGHT :CGFloat = (UIScreen.main.bounds.width == 812 || UIScreen.main.bounds.width == 896) ? 34.0 : 0
 
 extension UIDevice {
     /// 是不是iPhoneX ,如果是竖屏则 UIScreen.main.bounds.height == 812
