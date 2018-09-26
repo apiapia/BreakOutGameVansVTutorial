@@ -69,6 +69,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         learnTemp   = childNode(withName: "learnTemp") as! SKSpriteNode
         playButtonTemp   = childNode(withName: "playButton") as! SKSpriteNode
+        initDashLine()
         initCheckDevice()
         setupBall()       /// 球
         setupSkateboard() /// 滑板
@@ -78,11 +79,28 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         stateMachine.enter(WaitingState.self) // 进入WaitingState
         
     }
+    // MARK:- 画虚线
+    // 画一个 20x20的虚线格 for each
+    func initDashLine(){
+        let path = CGMutablePath()
+        
+        path.addLines(between: [CGPoint(x: 0, y: 400),CGPoint(x: size.width, y: 400)])
+        path.addLines(between: [CGPoint(x: 0, y: 800),CGPoint(x: size.width, y: 800)])
+        
+        let pattern = [CGFloat(30.0),CGFloat(1.0)]
+        let dashPath = path.copy(dashingWithPhase: 0, lengths: pattern, transform: .identity)
+    
+        let dashNode = SKShapeNode(path: dashPath)
+        dashNode.zPosition = 1
+        dashNode.strokeColor = SKColor.darkGray
+        dashNode.lineWidth = 2.0
+        addChild(dashNode)
+    }
     // option+command+->展开
     // MARK: - 检测是哪种设备
     func initCheckDevice(){
         if UIDevice.current.isPhoneX() {
-            maxAspectRatio = 2.16         /// iPhoneX 2.16 ratio
+            maxAspectRatio = 2.16         /// iPhoneX || iPhoneXs || iPhoneXs Max || iPhoneXr 2.16 高/宽比 ratio
         }else {
             maxAspectRatio  = UIDevice.current.isPad() ? (4.0 / 3.0) : (16.0 / 9.0)  /// iPhone 16:9,iPad 4:3
         }
@@ -102,7 +120,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         playableHeight  = size.width / ratio
         playableMargin = (size.height - playableHeight ) / 2.0   /// P70
         playableRect = CGRect(x: 0, y: playableMargin, width: size.width, height:  playableHeight)  /// 注意 scene的anchorPoint(0,0)原点的位置;
-        
         let shapeFrame = SKShapeNode(rect: playableRect)
         shapeFrame.zPosition = 1
         shapeFrame.strokeColor = SKColor.red
@@ -341,7 +358,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             if nodeAtPoint.name == "learnTemp" {
                  print("weird")
-                UIApplication.shared.open(URL(string: "http://www.iFIERO.com")!, options: [:], completionHandler: { (error) in
+                UIApplication.shared.open(URL(string: "http://www.iFIERO.com")!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: { (error) in
                     print("jump to http://www.iFiero.com")
                 })
             }
@@ -391,3 +408,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
+}
