@@ -19,13 +19,14 @@
  *
  *  BreakOutGame 弹潮V 在此游戏中您将获得如下主要技能:
  *
- *  1.GameScene Size   学习精确适配各种iPhone尺寸;
+ *  1.GameScene Size   学习精确适配各种iPhone/iPhoneX尺寸;
  *  2.GameplayKit      学习如何应用GameplayKit切换游戏状态;
  *  3.Velocity         三角函数求向量、判断球的速度;
  *  4.TouchBegan       学习触碰移动事件直接写在精灵中
  *  5.SoundManager     学习设置单例管理所有音乐;
- *  6.PhysicsBody      学习最基本物理碰撞特性 反弹 摩擦力;
- *  7.SKNode+SKScene   建立空节点+引入自定义Scene+node.copy+isPaused=false (**重要技能**)
+ *  6.AVAudioPlayer    学习如何调整背景音乐的大小
+ *  6.PhysicsBody      学习物理特性 反弹 摩擦力;
+ *  7.SKNode+SKScene   学习建立空节点+引入自定义Scene+node.copy+isPaused=false (**重要技能**)
  *  8.Convert          学习转换其它场景Scene的坐标到当前GameScene坐标;
  *
  */
@@ -67,9 +68,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)  /// 物理世界的重力
         self.physicsWorld.contactDelegate = self               /// 碰撞代理
         
-        learnTemp   = childNode(withName: "learnTemp") as! SKSpriteNode
-        playButtonTemp   = childNode(withName: "playButton") as! SKSpriteNode
-        initDashLine()
+        learnTemp   = (childNode(withName: "learnTemp") as! SKSpriteNode)
+        playButtonTemp   = (childNode(withName: "playButton") as! SKSpriteNode)
+        // initDashLine()
         initCheckDevice()
         setupBall()       /// 球
         setupSkateboard() /// 滑板
@@ -209,7 +210,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         sceneName = (CGFloat.random(1, max: 100) > 50) ? "ShoseCrossScene" : "ShoseScene"
         let overlayScene = SKScene(fileNamed: sceneName)!
         let overlayShose = overlayScene.childNode(withName: "Overlay") as! SKSpriteNode
-        gameSceneOverlay = overlayShose.copy() as! SKSpriteNode
+        gameSceneOverlay = (overlayShose.copy() as! SKSpriteNode)
         overlayShose.removeFromParent() // 移除旧的
         /* 留意SpirteKit的巨坑
          * When an overlay node with actions is copied  there is currently a SpriteKit bug
@@ -341,12 +342,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         /// 球和地板发生碰撞
         if (bodyA.categoryBitMask == PhysicsCategory.Ball && bodyB.categoryBitMask == PhysicsCategory.Floor) {
             //print("Game Over")
-            self.run(SoundManager.shareInstanced.gameover)
-            bodyB.node?.physicsBody?.categoryBitMask = PhysicsCategory.None
-            bodyA.node?.physicsBody?.linearDamping = 1.0 /// 阻力为1.0
-            bodyA.node?.physicsBody?.restitution = 0.7  /// 反弹;
-            self.physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8)
-            stateMachine.enter(GameOverState.self)
+//            self.run(SoundManager.shareInstanced.gameover)
+//            bodyB.node?.physicsBody?.categoryBitMask = PhysicsCategory.None
+//            bodyA.node?.physicsBody?.linearDamping = 1.0 /// 阻力为1.0
+//            bodyA.node?.physicsBody?.restitution = 0.7  /// 反弹;
+//            self.physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8)
+//            stateMachine.enter(GameOverState.self)
         }
         
     }
@@ -376,7 +377,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
             
         case is PlayState:
-            print("playing")
+           // print("playing")
+            break;
         case is GameOverState:
             
             if nodeAtPoint.name == "tapToPlay" {

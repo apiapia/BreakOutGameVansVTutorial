@@ -34,7 +34,7 @@ class PlayState:GKState {
             scene.gameOver()
             
         }else {
-            print("playing")
+            // print("playing")
         }
     }
     

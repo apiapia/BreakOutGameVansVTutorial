@@ -13,6 +13,7 @@ public class Skateboard:SKSpriteNode {
     //MARK:-  设置节点
     func setup(scene: SKScene) {
         
+        // print("is user interaction enabled")
         isUserInteractionEnabled = true  /// 是否允许交互
         
         let boardSize = SKTexture(imageNamed: "vansSkateboard").size()
@@ -31,6 +32,7 @@ public class Skateboard:SKSpriteNode {
     //MARK: - 触摸行为写在SKSpriteNode 内部  减轻GameScene的代码量
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         isFingerOnBoard = true
+        print("touch skate board")
     }
     //MARK: -  移动
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
