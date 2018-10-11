@@ -47,6 +47,6 @@ class GameOverState:GKState {
     
     
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return stateClass is PlayState.Type
+        return stateClass is WaitingState.Type
     }
 }

@@ -309,6 +309,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         newScene.scaleMode   = .aspectFill
         let transition = SKTransition.crossFade(withDuration: TimeInterval(0.5))
         view?.presentScene(newScene, transition:transition)
+        //reload GameScene 直接进入游戏状态;
+        newScene.stateMachine.enter(PlayState.self)
     }
     //MARK: - 实现物理碰撞代理SKPhysicsContactDelegate的didBegin方法
     func didBegin(_ contact: SKPhysicsContact) {
@@ -383,7 +385,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         case is GameOverState:
             
             if nodeAtPoint.name == "tapToPlay" {
-                restartGame()
+               restartGame()
+            
             }
             
         default:
