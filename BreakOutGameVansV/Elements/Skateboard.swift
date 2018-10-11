@@ -36,18 +36,22 @@ public class Skateboard:SKSpriteNode {
     }
     //MARK: -  移动
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch = touches.first
-        let touchLoc = touch?.location(in: self)
-        let touchPreviousLoc = touch?.previousLocation(in: self)  /// 上一次点击
-        var  boardXPos = self.position.x + ((touchLoc?.x)!  - (touchPreviousLoc?.x)!) // 获得最新的位置
-        /// 判断位置;
-        if boardXPos < self.size.width / 2 {
-            boardXPos = self.size.width / 2
+      
+        if isFingerOnBoard {
+            let touch = touches.first
+            let touchLoc = touch?.location(in: self)
+            let touchPreviousLoc = touch?.previousLocation(in: self)  /// 上一次点击
+            var  boardXPos = self.position.x + ((touchLoc?.x)!  - (touchPreviousLoc?.x)!) // 获得最新的位置
+            /// 判断位置;
+            if boardXPos < self.size.width / 2 {
+                boardXPos = self.size.width / 2
+            }
+            if boardXPos > ((scene?.size.width)! - self.size.width / 2) {
+                boardXPos = (scene?.size.width)! - self.size.width / 2
+            }
+            self.position.x = boardXPos  /// 更新位置
         }
-        if boardXPos > ((scene?.size.width)! - self.size.width / 2) {
-            boardXPos = (scene?.size.width)! - self.size.width / 2
-        }
-        self.position.x = boardXPos  /// 更新位置
+       
     }
     
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

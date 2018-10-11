@@ -8,6 +8,7 @@
 import SpriteKit
 
 public class BallNode:SKSpriteNode  {
+    
     /// 建立精灵节点
     func setup(scene:SKScene){
         self.zPosition = 3  

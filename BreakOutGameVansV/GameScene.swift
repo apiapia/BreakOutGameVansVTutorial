@@ -16,6 +16,7 @@
  *  Copyright © 2018 iFiero. All rights reserved.
  *  www.iFIERO.com
  *  iFIERO -- 为游戏开发深感自豪
+ *  H5 + PhaserJS  
  *
  *  BreakOutGame 弹潮V 在此游戏中您将获得如下主要技能:
  *
@@ -25,9 +26,9 @@
  *  4.TouchBegan       学习触碰移动事件直接写在精灵中
  *  5.SoundManager     学习设置单例管理所有音乐;
  *  6.AVAudioPlayer    学习如何调整背景音乐的大小
- *  6.PhysicsBody      学习物理特性 反弹 摩擦力;
- *  7.SKNode+SKScene   学习建立空节点+引入自定义Scene+node.copy+isPaused=false (**重要技能**)
- *  8.Convert          学习转换其它场景Scene的坐标到当前GameScene坐标;
+ *  7.PhysicsBody      学习物理特性 反弹 摩擦力;
+ *  8.SKNode+SKScene   学习建立空节点+引入自定义Scene+node.copy+isPaused=false (**重要技能**)
+ *  9.Convert          学习转换其它场景Scene的坐标到当前GameScene坐标;
  *
  */
 
@@ -132,7 +133,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     func drawPlayableArea(size:CGSize,ratio:CGFloat){
         
         playableHeight  = size.width / ratio
-        playableMargin = (size.height - playableHeight ) / 2.0   /// P70
+        playableMargin = (size.height - playableHeight ) / 2.0   /// (1536 -1152) / 2
         playableRect = CGRect(x: 0, y: playableMargin, width: size.width, height:  playableHeight)  /// 注意 scene的anchorPoint(0,0)原点的位置;
         print("playable Margin",playableMargin)
         
@@ -242,7 +243,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             // return 在catch不使用return的原因是 即使因声音播放不了 还是让整个游戏运行
             print("mp3 error")
         }
-        avPlayer.play()
+        // avPlayer.play()
         avPlayer.volume = 0.1 //音量
     }
     // 返回 -80.0 或 80.0 角度50 已经很小了;
@@ -258,7 +259,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         let xSpeed:CGFloat = abs((ballNode.physicsBody?.velocity.dx)!) /// 水平方向的dx
         let ySpeed:CGFloat = abs((ballNode.physicsBody?.velocity.dy)!)
-        /// print("xSpeed:" , xSpeed)
+         print("xSpeed:" , xSpeed)
         /// 为什么xSpeed是100，不是凭空乱猜的,可以根据打印出来的xSpeed进行查看(即快接近垂直时的角度差不多为50);
         if xSpeed < 100 { // xSpeed很小，表示球正在上下来回运动 必须赋一个值 让球再次向左右水平方向运动;
             ballNode.physicsBody?.applyImpulse(CGVector(dx: randomDirection(), dy: 0.0))
@@ -342,12 +343,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         /// 球和地板发生碰撞
         if (bodyA.categoryBitMask == PhysicsCategory.Ball && bodyB.categoryBitMask == PhysicsCategory.Floor) {
             //print("Game Over")
-//            self.run(SoundManager.shareInstanced.gameover)
-//            bodyB.node?.physicsBody?.categoryBitMask = PhysicsCategory.None
-//            bodyA.node?.physicsBody?.linearDamping = 1.0 /// 阻力为1.0
-//            bodyA.node?.physicsBody?.restitution = 0.7  /// 反弹;
-//            self.physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8)
-//            stateMachine.enter(GameOverState.self)
+            self.run(SoundManager.shareInstanced.gameover)
+            bodyB.node?.physicsBody?.categoryBitMask = PhysicsCategory.None
+            bodyA.node?.physicsBody?.linearDamping = 1.0 /// 阻力为1.0
+            bodyA.node?.physicsBody?.restitution = 0.7  /// 反弹;
+            self.physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8)
+            stateMachine.enter(GameOverState.self)
         }
         
     }
