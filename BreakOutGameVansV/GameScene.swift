@@ -23,7 +23,7 @@
  *  1.GameScene Size   学习精确适配各种iPhone/iPhoneX尺寸;
  *  2.GameplayKit      学习如何应用GameplayKit切换游戏状态;
  *  3.Velocity         三角函数求向量、判断球的速度;
- *  4.TouchBegan       学习触碰移动事件直接写在精灵中
+ *  4.TouchesBegan       学习触碰移动事件直接写在精灵中
  *  5.SoundManager     学习设置单例管理所有音乐;
  *  6.AVAudioPlayer    学习如何调整背景音乐的大小
  *  7.PhysicsBody      学习物理特性 反弹 摩擦力;
@@ -35,6 +35,8 @@
 import SpriteKit
 import GameplayKit
 import AVFoundation
+
+
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
@@ -77,6 +79,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         setupSkateboard() /// 滑板
         setupShose()      /// 鞋子
         setupBgMusic()    // 加入背景音乐;
+    
         
         stateMachine.enter(WaitingState.self) // 进入WaitingState
         
@@ -234,14 +237,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         // let music = SKAudioNode(fileNamed: "bgmusic.mp3")
         // music.autoplayLooped = true
         // self.addChild(music)
+        return
         // 背景音乐
         let path = Bundle.main.path(forResource: "bgmusic", ofType: "mp3")
         let pathUrl = URL(fileURLWithPath: path!)
         do {
             try avPlayer = AVAudioPlayer(contentsOf: pathUrl)
         }catch {
-            // return 在catch不使用return的原因是 即使因声音播放不了 还是让整个游戏运行
-            print("mp3 error")
+              // print("mp3 error")
+             // return 是退出函数本身;
+             return
         }
         // avPlayer.play()
         avPlayer.volume = 0.1 //音量
@@ -253,13 +258,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             xSpeed = -xSpeed
         }
         return xSpeed
+        
     }
     //MARK: - 时时校验球的运动速度和方向
     func verifyBallSpeed(_ dt:TimeInterval){
         
         let xSpeed:CGFloat = abs((ballNode.physicsBody?.velocity.dx)!) /// 水平方向的dx
         let ySpeed:CGFloat = abs((ballNode.physicsBody?.velocity.dy)!)
-         print("xSpeed:" , xSpeed)
+        print("xSpeed:" , xSpeed)
         /// 为什么xSpeed是100，不是凭空乱猜的,可以根据打印出来的xSpeed进行查看(即快接近垂直时的角度差不多为50);
         if xSpeed < 100 { // xSpeed很小，表示球正在上下来回运动 必须赋一个值 让球再次向左右水平方向运动;
             ballNode.physicsBody?.applyImpulse(CGVector(dx: randomDirection(), dy: 0.0))
@@ -350,7 +356,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             bodyA.node?.physicsBody?.linearDamping = 1.0 /// 阻力为1.0
             bodyA.node?.physicsBody?.restitution = 0.7  /// 反弹;
             self.physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8)
-            stateMachine.enter(GameOverState.self)
+           // stateMachine.enter(GameOverState.self)
+            gameOver()
         }
         
     }
@@ -380,13 +387,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
             
         case is PlayState:
-           // print("playing")
+            //挑战：判断是否是点击了暂停按钮 PauseButton
+            //            if nodeAtPoint.name == "pauseButton" {
+            //                stateMachine.enter(PauseState.self)
+            //            }
             break;
         case is GameOverState:
             
             if nodeAtPoint.name == "tapToPlay" {
-               restartGame()
-            
+                restartGame()
             }
             
         default:
@@ -395,6 +404,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     
     func gameOver(){
+    
         // 进入游戏结束的state
         stateMachine.enter(GameOverState.self)
         ballNode.physicsBody?.affectedByGravity = true 

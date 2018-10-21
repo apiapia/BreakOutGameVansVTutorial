@@ -45,8 +45,8 @@ class GameOverState:GKState {
         scene.addChild(tapNode)
     }
     
-    
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return stateClass is WaitingState.Type
-    }
+//    
+//    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
+//        return stateClass is WaitingState.Type
+//    }
 }
